@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#176b53">
+<title>My Money</title>
+<style>
+:root{--green:#176b53;--green2:#e4f3ec;--bg:#f4f6f5;--card:#fff;--text:#17211d;--muted:#68756f;--line:#e1e8e4;--red:#b54747;--gold:#d99a36;--blue:#6375bd}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding-bottom:88px}
+header{background:var(--green);color:#fff;padding:calc(16px + env(safe-area-inset-top)) 18px 20px;position:sticky;top:0;z-index:5}
+.headrow{display:flex;align-items:center;justify-content:space-between;gap:10px}h1{font-size:23px;margin:0;font-weight:750}header p{margin:6px 0 0;color:#d7eee5;font-size:13px}
+button,select,input,textarea{font:inherit}button{border:0;border-radius:12px;padding:11px 14px;background:var(--green);color:white;font-weight:650;cursor:pointer}button.secondary{background:var(--green2);color:var(--green)}button.ghost{background:transparent;color:inherit;border:1px solid var(--line)}button.danger{background:#fae9e9;color:var(--red)}button.small{padding:7px 10px;font-size:13px;border-radius:9px}
+main{max-width:720px;margin:0 auto;padding:16px 14px 24px}.tabs{display:flex;gap:8px;overflow:auto;padding:10px 14px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:77px;z-index:4}.tabs button{white-space:nowrap;background:transparent;color:var(--muted);padding:9px 12px}.tabs button.active{background:var(--green2);color:var(--green)}
+.panel{display:none}.panel.active{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:13px;box-shadow:0 2px 7px #10271b05}.balance{font-size:30px;font-weight:800;letter-spacing:-.7px}.muted{color:var(--muted)}.tiny{font-size:12px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.statlabel{font-size:12px;color:var(--muted);margin-bottom:6px}.amount{font-size:20px;font-weight:750}.positive{color:var(--green)}.negative{color:var(--red)}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 2px 10px}.sectionhead h2{font-size:17px;margin:0}.row{display:flex;align-items:center;gap:11px}.grow{flex:1;min-width:0}.item{padding:12px 0;border-bottom:1px solid var(--line)}.item:last-child{border-bottom:0}.itemtitle{font-weight:650}.itemsub{font-size:12px;color:var(--muted);margin-top:4px}.right{text-align:right}.pill{display:inline-block;background:#edf4f0;color:var(--green);font-size:11px;padding:4px 8px;border-radius:99px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.field{display:flex;flex-direction:column;gap:6px;margin-bottom:11px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:700;color:var(--muted)}input,select,textarea{width:100%;min-width:0;padding:12px;border:1px solid #d8e1dc;border-radius:11px;background:#fff;color:var(--text)}input:focus,select:focus,textarea:focus{outline:2px solid #9ed3bd;border-color:var(--green)}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions>*{flex:1}.empty{text-align:center;padding:26px 10px;color:var(--muted)}.chartwrap{display:flex;align-items:center;gap:18px}.donut{width:145px;height:145px;flex:none}.legend{flex:1;min-width:0}.legendrow{display:flex;align-items:center;gap:7px;font-size:12px;margin:8px 0}.dot{width:9px;height:9px;border-radius:3px;flex:none}.monthrow{display:flex;gap:8px;align-items:center}.monthrow>*{flex:1}.accounticon{width:40px;height:40px;border-radius:13px;background:var(--green2);display:grid;place-items:center;font-size:19px}.navbottom{position:fixed;bottom:0;left:0;right:0;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:#fffffff2;backdrop-filter:blur(15px);border-top:1px solid var(--line);display:flex;justify-content:space-around;z-index:8}.navbottom button{background:transparent;color:var(--muted);font-size:11px;padding:7px 8px;display:flex;flex-direction:column;align-items:center;gap:3px}.navbottom button.active{color:var(--green)}.navbottom span{font-size:20px}.notice{font-size:12px;color:var(--muted);line-height:1.5}.hidden{display:none!important}.subtleline{height:1px;background:var(--line);margin:12px 0}
+@media(min-width:600px){main{padding-top:22px}.tabs{justify-content:center}.navbottom{max-width:720px;left:50%;transform:translateX(-50%);border:1px solid var(--line);border-bottom:0;border-radius:18px 18px 0 0}}
+</style>
+</head>
+<body>
+<header><div class="headrow"><h1>My Money</h1><button class="small" id="quickAdd">＋ Add</button></div><p id="headerDate">Your personal finance tracker</p></header>
+<div class="tabs" id="tabs">
+<button class="active" data-tab="home">Overview</button><button data-tab="records">Records</button><button data-tab="accounts">Accounts</button><button data-tab="stats">Statistics</button><button data-tab="settings">Settings</button>
+</div>
+<main>
+<section class="panel active" id="home">
+<div class="card"><div class="muted tiny">Total balance · converted to RON where rates are set</div><div class="balance" id="totalBalance">0,00 RON</div><div class="tiny muted" id="accountCount">0 accounts</div><div class="subtleline"></div><div class="stats"><div><div class="statlabel">Income this month</div><div class="amount positive" id="homeIncome">0,00 RON</div></div><div><div class="statlabel">Expenses this month</div><div class="amount negative" id="homeExpense">0,00 RON</div></div></div></div>
+<div class="sectionhead"><h2>Recent records</h2><button class="secondary small" data-goto="records">See all</button></div><div class="card" id="recentList"></div>
+<div class="sectionhead"><h2>Accounts</h2><button class="secondary small" data-goto="accounts">Manage</button></div><div class="card" id="homeAccounts"></div>
+<div class="notice">Balances are calculated from entries you record. This app does not connect to banks.</div>
+</section>
+<section class="panel" id="records">
+<div class="sectionhead"><h2>Transactions</h2><button id="newTransaction">＋ Add record</button></div>
+<div class="card"><div class="formgrid"><div class="field"><label>Period</label><select id="recordPeriod"><option value="month">This month</option><option value="year">This year</option><option value="all">All time</option></select></div><div class="field"><label>Type</label><select id="recordType"><option value="all">All types</option><option value="expense">Expenses</option><option value="income">Income</option><option value="transfer">Transfers</option></select></div></div></div>
+<div class="card" id="recordList"></div>
+</section>
+<section class="panel" id="accounts">
+<div class="sectionhead"><h2>Your accounts</h2><button id="addAccount">＋ Add account</button></div><div class="card" id="accountList"></div>
+<div class="card"><h3 style="margin-top:0">Currency rates to RON</h3><p class="notice">Enter how many RON equal 1 unit of each currency. For example, if 1 EUR = 4.97 RON, enter 4.97. Rates are only used to show an estimated combined balance and do not update automatically.</p><div id="rateFields"></div><button id="saveRates" class="secondary">Save exchange rates</button></div>
+</section>
+<section class="panel" id="stats">
+<div class="card"><div class="monthrow"><div class="field"><label>Period</label><select id="statsPeriod"><option value="month">Month</option><option value="year">Year</option></select></div><div class="field"><label>Date</label><input type="month" id="statsMonth"></div></div><div class="field"><label>Chart</label><select id="statsType"><option value="expense">Expenses by category</option><option value="income">Income by category</option></select></div></div>
+<div class="card"><h2 style="font-size:17px;margin-top:0" id="chartTitle">Expenses by category</h2><div id="chartArea"></div></div><div class="card"><h3 style="margin-top:0">Category totals</h3><div id="categoryTotals"></div></div>
+</section>
+<section class="panel" id="settings">
+<div class="card"><h2 style="margin-top:0;font-size:18px">Categories & subcategories</h2><p class="notice">Create and edit categories for income or expenses. Existing records keep their saved category names.</p><div class="formgrid"><div class="field"><label>Type</label><select id="catType"><option value="expense">Expense</option><option value="income">Income</option></select></div><div class="field"><label>Category name</label><input id="catName" placeholder="e.g. Food"></div><div class="field full"><label>Subcategories (separate with commas)</label><input id="catSubs" placeholder="Groceries, Restaurants, Coffee"></div></div><button id="addCategory">Add category</button><div class="subtleline"></div><div id="categoryList"></div></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">Backup & restore</h2><p class="notice">Export a JSON backup regularly and keep it somewhere safe. The backup includes your accounts, transactions, categories, and exchange rates. Do not share it: it contains private financial information.</p><div class="actions"><button id="exportBackup">Export backup</button><button class="secondary" id="importBackupBtn">Restore backup</button><input class="hidden" type="file" id="importBackup" accept=".json,application/json"></div><div style="margin-top:12px"><button class="danger" id="clearData">Delete all app data</button></div><p class="notice">Data is stored in this browser on this device. Clearing Safari website data or changing the app's website address may make it unavailable. Export backups before deleting or moving anything.</p></div>
+<div class="card"><h2 style="margin-top:0;font-size:18px">About</h2><p class="notice">My Money · Personal-use prototype · Default currency RON. No bank connections, no cloud sync, and no data is intentionally sent to a server by this app.</p></div>
+</section>
+</main>
+<div class="navbottom"><button class="active" data-tab="home"><span>⌂</span>Home</button><button data-tab="records"><span>↔</span>Records</button><button data-tab="accounts"><span>▣</span>Accounts</button><button data-tab="stats"><span>◔</span>Stats</button><button data-tab="settings"><span>⚙</span>Settings</button></div>
+
+<dialog id="transactionDialog" style="border:0;border-radius:20px;padding:0;width:min(94vw,540px);max-height:90vh;overflow:auto">
+<form id="transactionForm" class="card" style="margin:0;border:0;border-radius:20px">
+<div class="headrow"><h2 style="font-size:19px;margin:0" id="txDialogTitle">Add record</h2><button type="button" class="ghost small" id="closeTx">Close</button></div><div class="subtleline"></div>
+<input type="hidden" id="txId">
+<div class="formgrid"><div class="field"><label>Type</label><select id="txType"><option value="expense">Expense</option><option value="income">Income</option><option value="transfer">Transfer</option></select></div><div class="field"><label>Amount</label><input id="txAmount" type="number" min="0.01" step="0.01" required placeholder="0.00"></div>
+<div class="field"><label>Date</label><input id="txDate" type="date" required></div><div class="field" id="txAccountWrap"><label>Account</label><select id="txAccount" required></select></div>
+<div class="field hidden" id="txToWrap"><label>Transfer to</label><select id="txToAccount"></select></div>
+<div class="field" id="txCategoryWrap"><label>Category</label><select id="txCategory"></select></div><div class="field" id="txSubWrap"><label>Subcategory</label><select id="txSub"></select></div>
+<div class="field full"><label>Note (optional)</label><input id="txNote" placeholder="What was this for?"></div></div>
+<p class="notice" id="txCurrencyNote"></p><div class="actions"><button type="submit">Save record</button><button type="button" class="secondary" id="cancelTx">Cancel</button></div></form></dialog>
+
+<dialog id="accountDialog" style="border:0;border-radius:20px;padding:0;width:min(94vw,500px);max-height:90vh;overflow:auto"><form id="accountForm" class="card" style="margin:0;border:0"><div class="headrow"><h2 style="font-size:19px;margin:0">Add account</h2><button type="button" class="ghost small" id="closeAccount">Close</button></div><div class="subtleline"></div><div class="field"><label>Account name</label><input id="accName" required placeholder="e.g. Main bank account"></div><div class="formgrid"><div class="field"><label>Account type</label><select id="accType"><option>Bank account</option><option>Debit card</option><option>Credit card</option><option>Savings</option><option>Cash</option><option>Other</option></select></div><div class="field"><label>Currency</label><select id="accCurrency"><option>RON</option><option>EUR</option><option>USD</option><option>GBP</option><option>CHF</option><option>HUF</option><option>BGN</option><option>PLN</option><option>TRY</option><option>Other</option></select></div></div><div class="field"><label>Opening balance</label><input id="accOpening" type="number" step="0.01" value="0" required></div><p class="notice">For a credit card, enter the balance as you want it displayed. This simple version does not automatically calculate credit limits or debt interest.</p><div class="actions"><button type="submit">Save account</button><button type="button" class="secondary" id="cancelAccount">Cancel</button></div></form></dialog>
+
+<script>
+(function(){
+'use strict';
+const KEY='mymoney_local_v1';
+const COLORS=['#176b53','#d99a36','#6375bd','#c56b56','#49a7a0','#a66fb0','#8c9b50','#d16f91','#8b9690','#4d82a8'];
+const defaults={
+ accounts:[], transactions:[], rates:{RON:1,EUR:4.97,USD:4.6,GBP:5.8,CHF:5.2,HUF:0.0125,BGN:2.54,PLN:1.16,TRY:0.13,Other:1},
+ categories:[
+ {id:'e-food',type:'expense',name:'Food',subs:['Groceries','Restaurants','Coffee']},
+ {id:'e-housing',type:'expense',name:'Housing',subs:['Rent','Utilities','Maintenance']},
+ {id:'e-transport',type:'expense',name:'Transport',subs:['Fuel','Public transport','Taxi','Car maintenance']},
+ {id:'e-shopping',type:'expense',name:'Shopping',subs:['Clothing','Electronics','Home']},
+ {id:'e-health',type:'expense',name:'Health',subs:['Pharmacy','Doctor','Fitness']},
+ {id:'e-entertainment',type:'expense',name:'Entertainment',subs:['Movies','Subscriptions','Hobbies']},
+ {id:'e-travel',type:'expense',name:'Travel',subs:['Flights','Hotels','Activities']},
+ {id:'e-other',type:'expense',name:'Other',subs:['Gifts','Fees','Miscellaneous']},
+ {id:'i-salary',type:'income',name:'Salary',subs:['Main job','Bonus']},
+ {id:'i-freelance',type:'income',name:'Freelance',subs:['Project','Consulting']},
+ {id:'i-invest',type:'income',name:'Investments',subs:['Interest','Dividends']},
+ {id:'i-other',type:'income',name:'Other income',subs:['Gift','Refund','Miscellaneous']}
+ ]};
+let state=loadState();
+function loadState(){try{let s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.accounts)&&Array.isArray(s.transactions)&&Array.isArray(s.categories))return s}catch(e){}return structuredClone(defaults)}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));renderAll()}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function today(){return new Date().toISOString().slice(0,10)}
+function fmt(n,c='RON'){try{return new Intl.NumberFormat('ro-RO',{style:'currency',currency:c,maximumFractionDigits:2}).format(Number(n)||0)}catch(e){return (Number(n)||0).toFixed(2)+' '+c}}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function account(id){return state.accounts.find(a=>a.id===id)}
+function rate(c){return Number(state.rates[c]||1)}
+function txCurrency(t){return account(t.accountId)?.currency||'RON'}
+function txDateNow(t){return (t.date||'').slice(0,7)===today().slice(0,7)}
+function txValueRON(t){return (Number(t.amount)||0)*rate(txCurrency(t))}
+function txLabel(t){return t.type==='income'?'Income':t.type==='transfer'?'Transfer':'Expense'}
+function signed(n,c){return fmt(n,c)}
+function balance(a){let n=Number(a.opening)||0;state.transactions.forEach(t=>{if(t.type==='transfer'){if(t.accountId===a.id)n-=Number(t.amount)||0;if(t.toAccountId===a.id)n+=Number(t.amount)||0}else if(t.accountId===a.id){n+=(t.type==='income'?1:-1)*(Number(t.amount)||0)}});return n}
+function showTab(name){document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===name));document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));if(name==='stats')renderStats();window.scrollTo(0,0)}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.goto)));
+document.getElementById('headerDate').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+function renderAll(){renderHome();renderRecords();renderAccounts();renderCategories();renderStats();populateTxForm()}
+function renderHome(){
+ const total=state.accounts.reduce((s,a)=>s+balance(a)*rate(a.currency),0);
+ document.getElementById('totalBalance').textContent=fmt(total,'RON');
+ document.getElementById('accountCount').textContent=state.accounts.length+' account'+(state.accounts.length===1?'':'s');
+ const m=today().slice(0,7);let inc=0,exp=0;
+ state.transactions.filter(t=>t.date?.slice(0,7)===m&&t.type!=='transfer').forEach(t=>{if(t.type==='income')inc+=txValueRON(t);else exp+=txValueRON(t)});
+ document.getElementById('homeIncome').textContent=fmt(inc,'RON');document.getElementById('homeExpense').textContent=fmt(exp,'RON');
+ const recent=[...state.transactions].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,5);
+ document.getElementById('recentList').innerHTML=recent.length?recent.map(txHTML).join(''):'<div class="empty">No records yet.<br>Add your first income or expense.</div>';
+ document.getElementById('homeAccounts').innerHTML=state.accounts.length?state.accounts.slice(0,5).map(a=>`<div class="item row"><div class="accounticon">${iconFor(a.type)}</div><div class="grow"><div class="itemtitle">${escapeHtml(a.name)}</div><div class="itemsub">${escapeHtml(a.type)} · ${a.currency}</div></div><div class="right"><b>${fmt(balance(a),a.currency)}</b></div></div>`).join(''):'<div class="empty">Add a bank account, card, savings account, or cash wallet.</div>';
+}
+function iconFor(type){return type==='Savings'?'◈':type==='Cash'?'◉':type==='Credit card'?'▤':'▣'}
+function txHTML(t){const a=account(t.accountId);const name=t.type==='transfer'?`${a?.name||'Account'} → ${account(t.toAccountId)?.name||'Account'}`:(t.category||txLabel(t));const amt=t.type==='income'?'+ '+fmt(t.amount,txCurrency(t)):(t.type==='expense'?'− ':'')+fmt(t.amount,txCurrency(t));return `<div class="item row"><div class="accounticon">${t.type==='income'?'↙':t.type==='transfer'?'⇄':'↗'}</div><div class="grow"><div class="itemtitle">${escapeHtml(name)}</div><div class="itemsub">${escapeHtml(t.date||'')} · ${escapeHtml(a?.name||'Deleted account')}${t.subcategory?' · '+escapeHtml(t.subcategory):''}${t.note?' · '+escapeHtml(t.note):''}</div></div><div class="right"><div class="${t.type==='income'?'positive':t.type==='expense'?'negative':''}" style="font-weight:750;white-space:nowrap">${amt}</div><div class="actions" style="justify-content:flex-end;margin-top:6px"><button class="ghost small" data-edit-tx="${t.id}">Edit</button><button class="danger small" data-delete-tx="${t.id}">×</button></div></div></div>`}
+function renderRecords(){
+ const period=document.getElementById('recordPeriod').value,type=document.getElementById('recordType').value,now=today();
+ let arr=[...state.transactions].filter(t=>(period==='all'||(period==='month'?t.date?.slice(0,7)===now.slice(0,7):t.date?.slice(0,4)===now.slice(0,4)))&&(type==='all'||t.type===type)).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+ document.getElementById('recordList').innerHTML=arr.length?arr.map(txHTML).join(''):'<div class="empty">No matching records.</div>';
+}
+document.getElementById('recordPeriod').addEventListener('change',renderRecords);document.getElementById('recordType').addEventListener('change',renderRecords);
+function renderAccounts(){
+ document.getElementById('accountList').innerHTML=state.accounts.length?state.accounts.map(a=>`<div class="item row"><div class="accounticon">${iconFor(a.type)}</div><div class="grow"><div class="itemtitle">${escapeHtml(a.name)}</div><div class="itemsub">${escapeHtml(a.type)} · ${a.currency} · Opening ${fmt(a.opening,a.currency)}</div></div><div class="right"><b>${fmt(balance(a),a.currency)}</b><div class="actions" style="justify-content:flex-end;margin-top:6px"><button class="ghost small" data-edit-account="${a.id}">Edit</button><button class="danger small" data-delete-account="${a.id}">×</button></div></div></div>`).join(''):'<div class="empty">No accounts yet. Add your first account.</div>';
+ document.getElementById('rateFields').innerHTML=['RON','EUR','USD','GBP','CHF','HUF','BGN','PLN','TRY','Other'].map(c=>`<div class="field"><label>1 ${c} = RON</label><input data-rate="${c}" type="number" min="0.000001" step="any" value="${state.rates[c]||1}"></div>`).join('');
+}
+document.getElementById('saveRates').addEventListener('click',()=>{document.querySelectorAll('[data-rate]').forEach(el=>{const n=Number(el.value);if(n>0)state.rates[el.dataset.rate]=n});save();alert('Exchange rates saved.')});
+const accDialog=document.getElementById('accountDialog');let editAccountId=null;
+function openAccount(a=null){editAccountId=a?.id||null;document.querySelector('#accountForm h2').textContent=a?'Edit account':'Add account';document.getElementById('accName').value=a?.name||'';document.getElementById('accType').value=a?.type||'Bank account';document.getElementById('accCurrency').value=a?.currency||'RON';document.getElementById('accOpening').value=a?.opening??0;accDialog.showModal()}
+document.getElementById('addAccount').addEventListener('click',()=>openAccount());document.getElementById('closeAccount').addEventListener('click',()=>accDialog.close());document.getElementById('cancelAccount').addEventListener('click',()=>accDialog.close());
+document.getElementById('accountForm').addEventListener('submit',e=>{e.preventDefault();const obj={id:editAccountId||uid(),name:document.getElementById('accName').value.trim(),type:document.getElementById('accType').value,currency:document.getElementById('accCurrency').value,opening:Number(document.getElementById('accOpening').value)||0};if(!obj.name)return;if(editAccountId){state.accounts=state.accounts.map(a=>a.id===editAccountId?obj:a)}else state.accounts.push(obj);accDialog.close();save()});
+function populateTxForm(t=null){
+ const type=document.getElementById('txType').value;
+ const opts=state.accounts.map(a=>`<option value="${a.id}">${escapeHtml(a.name)} (${a.currency})</option>`).join('');
+ document.getElementById('txAccount').innerHTML=opts;document.getElementById('txToAccount').innerHTML=opts;
+ if(t){document.getElementById('txAccount').value=t.accountId||'';document.getElementById('txToAccount').value=t.toAccountId||''}
+ document.getElementById('txToWrap').classList.toggle('hidden',type!=='transfer');document.getElementById('txCategoryWrap').classList.toggle('hidden',type==='transfer');document.getElementById('txSubWrap').classList.toggle('hidden',type==='transfer');
+ const cats=state.categories.filter(c=>c.type===type&&type!=='transfer');
+ document.getElementById('txCategory').innerHTML=cats.map(c=>`<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join('');
+ if(t?.category)document.getElementById('txCategory').value=t.category;
+ populateSubs(t?.subcategory);
+ const a=account(document.getElementById('txAccount').value);
+ document.getElementById('txCurrencyNote').textContent=a?`Amount is recorded in ${a.currency} for ${a.name}.`:state.accounts.length?'Choose an account.':'Add an account first in Accounts.';
+}
+function populateSubs(selected=''){const cat=state.categories.find(c=>c.type===document.getElementById('txType').value&&c.name===document.getElementById('txCategory').value);const subs=cat?.subs||[];document.getElementById('txSub').innerHTML='<option value="">No subcategory</option>'+subs.map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');document.getElementById('txSub').value=selected}
+document.getElementById('txType').addEventListener('change',()=>populateTxForm());document.getElementById('txCategory').addEventListener('change',()=>populateSubs());document.getElementById('txAccount').addEventListener('change',()=>{const a=account(document.getElementById('txAccount').value);document.getElementById('txCurrencyNote').textContent=a?`Amount is recorded in ${a.currency} for ${a.name}.`:''});
+const txDialog=document.getElementById('transactionDialog');
+function openTx(t=null){if(!state.accounts.length){alert('Please add an account first.');showTab('accounts');return}document.getElementById('transactionForm').reset();document.getElementById('txId').value=t?.id||'';document.getElementById('txDialogTitle').textContent=t?'Edit record':'Add record';document.getElementById('txType').value=t?.type||'expense';document.getElementById('txAmount').value=t?.amount??'';document.getElementById('txDate').value=t?.date||today();document.getElementById('txNote').value=t?.note||'';populateTxForm(t);if(t){document.getElementById('txCategory').value=t.category||'';populateSubs(t.subcategory)}txDialog.showModal()}
+document.getElementById('quickAdd').addEventListener('click',()=>openTx());document.getElementById('newTransaction').addEventListener('click',()=>openTx());document.getElementById('closeTx').addEventListener('click',()=>txDialog.close());document.getElementById('cancelTx').addEventListener('click',()=>txDialog.close());
+document.getElementById('transactionForm').addEventListener('submit',e=>{e.preventDefault();const type=document.getElementById('txType').value,amount=Number(document.getElementById('txAmount').value),accountId=document.getElementById('txAccount').value,toAccountId=document.getElementById('txToAccount').value;if(!(amount>0)){alert('Enter an amount greater than zero.');return}if(!account(accountId)){alert('Choose a valid account.');return}if(type==='transfer'&&(!account(toAccountId)||toAccountId===accountId)){alert('Choose a different destination account.');return}const id=document.getElementById('txId').value;const t={id:id||uid(),type,amount,accountId,date:document.getElementById('txDate').value||today(),note:document.getElementById('txNote').value.trim(),category:type==='transfer'?'Transfer':document.getElementById('txCategory').value,subcategory:type==='transfer'?'':document.getElementById('txSub').value,toAccountId:type==='transfer'?toAccountId:''};if(id)state.transactions=state.transactions.map(x=>x.id===id?t:x);else state.transactions.push(t);txDialog.close();save()});
+document.addEventListener('click',e=>{
+ const et=e.target.closest('[data-edit-tx]');if(et){openTx(state.transactions.find(t=>t.id===et.dataset.editTx));return}
+ const dt=e.target.closest('[data-delete-tx]');if(dt){if(confirm('Delete this record?')){state.transactions=state.transactions.filter(t=>t.id!==dt.dataset.deleteTx);save()}return}
+ const ea=e.target.closest('[data-edit-account]');if(ea){openAccount(account(ea.dataset.editAccount));return}
+ const da=e.target.closest('[data-delete-account]');if(da){const id=da.dataset.deleteAccount;if(state.transactions.some(t=>t.accountId===id||t.toAccountId===id)){alert('This account is used by records. Move or delete those records first.');return}if(confirm('Delete this account?')){state.accounts=state.accounts.filter(a=>a.id!==id);save()}return}
+ const dc=e.target.closest('[data-delete-cat]');if(dc){if(confirm('Delete this category? Existing records keep their saved category name.')){state.categories=state.categories.filter(c=>c.id!==dc.dataset.deleteCat);save()}return}
+ const ec=e.target.closest('[data-edit-cat]');if(ec){const c=state.categories.find(x=>x.id===ec.dataset.editCat);if(c){document.getElementById('catType').value=c.type;document.getElementById('catName').value=c.name;document.getElementById('catSubs').value=c.subs.join(', ');document.getElementById('addCategory').dataset.edit=c.id;document.getElementById('addCategory').textContent='Save category changes';document.getElementById('catName').focus()}return}
+});
+function renderCategories(){const type=document.getElementById('catType').value;document.getElementById('categoryList').innerHTML=state.categories.filter(c=>c.type===type).map(c=>`<div class="item"><div class="row"><div class="grow"><div class="itemtitle">${escapeHtml(c.name)}</div><div class="itemsub">${c.subs.map(escapeHtml).join(' · ')||'No subcategories'}</div></div><button class="ghost small" data-edit-cat="${c.id}">Edit</button><button class="danger small" data-delete-cat="${c.id}">×</button></div></div>`).join('')||'<div class="empty">No categories.</div>'}
+document.getElementById('catType').addEventListener('change',renderCategories);
+document.getElementById('addCategory').addEventListener('click',()=>{const type=document.getElementById('catType').value,name=document.getElementById('catName').value.trim(),subs=document.getElementById('catSubs').value.split(',').map(s=>s.trim()).filter(Boolean),btn=document.getElementById('addCategory');if(!name){alert('Enter a category name.');return}if(state.categories.some(c=>c.type===type&&c.name.toLowerCase()===name.toLowerCase()&&c.id!==btn.dataset.edit)){alert('A category with this name already exists for this type.');return}if(btn.dataset.edit){const id=btn.dataset.edit;state.categories=state.categories.map(c=>c.id===id?{...c,type,name,subs}:c);delete btn.dataset.edit;btn.textContent='Add category'}else state.categories.push({id:uid(),type,name,subs});document.getElementById('catName').value='';document.getElementById('catSubs').value='';save()});
+document.getElementById('statsMonth').value=today().slice(0,7);document.getElementById('statsPeriod').addEventListener('change',renderStats);document.getElementById('statsMonth').addEventListener('change',renderStats);document.getElementById('statsType').addEventListener('change',renderStats);
+function renderStats(){if(!document.getElementById('chartArea'))return;const period=document.getElementById('statsPeriod').value,date=document.getElementById('statsMonth').value||today().slice(0,7),type=document.getElementById('statsType').value;let arr=state.transactions.filter(t=>t.type===type&&(period==='month'?t.date?.slice(0,7)===date:t.date?.slice(0,4)===date.slice(0,4)));let sums={};arr.forEach(t=>{const k=t.category||'Uncategorized';sums[k]=(sums[k]||0)+txValueRON(t)});const entries=Object.entries(sums).sort((a,b)=>b[1]-a[1]);const total=entries.reduce((s,e)=>s+e[1],0);document.getElementById('chartTitle').textContent=(type==='expense'?'Expenses':'Income')+' · '+(period==='month'?date:date.slice(0,4))+' (RON equivalent)';if(!total){document.getElementById('chartArea').innerHTML='<div class="empty">No '+(type==='expense'?'expenses':'income')+' for this period yet.</div>';document.getElementById('categoryTotals').innerHTML='<div class="empty">Totals will appear after you add records.</div>';return}
+let offset=0,arcs=[];entries.forEach((e,i)=>{const angle=e[1]/total*360;arcs.push(`${COLORS[i%COLORS.length]} ${offset}deg ${offset+angle}deg`);offset+=angle});let gradient='conic-gradient('+arcs.join(',')+')';
+document.getElementById('chartArea').innerHTML=`<div class="chartwrap"><div class="donut" style="border-radius:50%;background:${gradient};position:relative"><div style="position:absolute;inset:25%;border-radius:50%;background:white;display:grid;place-items:center;text-align:center;padding:5px"><div><div class="tiny muted">Total</div><b style="font-size:13px">${fmt(total,'RON')}</b></div></div></div><div class="legend">${entries.slice(0,7).map((e,i)=>`<div class="legendrow"><span class="dot" style="background:${COLORS[i%COLORS.length]}"></span><span style="flex:1;overflow-wrap:anywhere">${escapeHtml(e[0])}</span><b>${Math.round(e[1]/total*100)}%</b></div>`).join('')}${entries.length>7?`<div class="tiny muted">+ ${entries.length-7} more categories</div>`:''}</div></div>`;
+document.getElementById('categoryTotals').innerHTML=entries.map((e,i)=>`<div class="item row"><span class="dot" style="background:${COLORS[i%COLORS.length]}"></span><div class="grow">${escapeHtml(e[0])}<div class="itemsub">${(e[1]/total*100).toFixed(1)}% of total</div></div><b>${fmt(e[1],'RON')}</b></div>`).join('')}
+document.getElementById('exportBackup').addEventListener('click',()=>{const blob=new Blob([JSON.stringify({app:'My Money',version:1,exportedAt:new Date().toISOString(),state},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='my-money-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)});
+document.getElementById('importBackupBtn').addEventListener('click',()=>document.getElementById('importBackup').click());
+document.getElementById('importBackup').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{const obj=JSON.parse(await f.text());const s=obj.state||obj;if(!Array.isArray(s.accounts)||!Array.isArray(s.transactions)||!Array.isArray(s.categories)||!s.rates)throw Error('This file does not look like a My Money backup.');if(!confirm('Restore this backup and replace the current app data? Export your current data first if you want to keep it.'))return;state=s;save();alert('Backup restored.')}catch(err){alert('Could not restore this file: '+err.message)}finally{e.target.value=''}});
+document.getElementById('clearData').addEventListener('click',()=>{if(confirm('Delete all accounts, records, categories and settings from this browser? Export a backup first.')){state=structuredClone(defaults);localStorage.removeItem(KEY);save();alert('App data cleared.')}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderAll()});
+renderAll();
+})();
+</script>
+</body>
+</html>
